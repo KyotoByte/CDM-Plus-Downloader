@@ -1,0 +1,12 @@
+build/
+.gradle/
+.kotlin/
+local.properties
+keystore/
+*.jks
+*.keystore
+signing.properties
+PASSWORD.txt
+*.apk
+shots/
+benchmark.txt
