@@ -294,8 +294,10 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                 )
+                io.github.kyotobyte.cdmplus.update.UpdateDialogHost()
             }
         }
+        if (savedInstanceState == null) io.github.kyotobyte.cdmplus.update.Updater.onAppOpen(applicationContext, app.appScope)
     }
 
     override fun onDestroy() {
@@ -328,6 +330,15 @@ class MainActivity : ComponentActivity() {
         intent ?: return
         when (intent.getStringExtra(EXTRA_TAB)) {
             "vpn" -> state.tab = io.github.kyotobyte.cdmplus.ui.Tab.VPN
+        }
+        if (intent.getBooleanExtra(io.github.kyotobyte.cdmplus.update.Updater.EXTRA_UPDATE, false)) {
+            intent.removeExtra(io.github.kyotobyte.cdmplus.update.Updater.EXTRA_UPDATE)
+            state.tab = io.github.kyotobyte.cdmplus.ui.Tab.DOWNLOADS
+            io.github.kyotobyte.cdmplus.update.Updater.showDialog.value = true
+        }
+        if (intent.getBooleanExtra(io.github.kyotobyte.cdmplus.update.Updater.EXTRA_NOTICE, false)) {
+            intent.removeExtra(io.github.kyotobyte.cdmplus.update.Updater.EXTRA_NOTICE)
+            state.tab = io.github.kyotobyte.cdmplus.ui.Tab.DOWNLOADS
         }
         if (intent.getBooleanExtra(EXTRA_VPN_ON, false)) {
             // Only CDM+'s own tile may switch 1.1.1.1 on: it carries a private per-install token.

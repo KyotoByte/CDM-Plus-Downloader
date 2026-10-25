@@ -94,6 +94,7 @@ Open the [latest release](https://github.com/KyotoByte/CDM-Plus-Downloader/relea
 - 🧱 **1.1.1.1 mode**: DNS-only VPN with DNS-over-HTTPS and ad/tracker block lists for the whole phone
 - 🎨 Dark / AMOLED / light themes, custom accent, floating speed window, quick-settings tiles, QR scan
 - 📂 Saves to `Downloads/CDM+` or any folder / SD card you choose
+- 🔔 Update & announcement notifications (toggle in Settings)
 
 ## 🔧 Install
 

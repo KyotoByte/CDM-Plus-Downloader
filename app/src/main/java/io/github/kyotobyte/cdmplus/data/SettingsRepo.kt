@@ -43,6 +43,9 @@ data class AppSettings(
     val savePasswords: Boolean = true,
     val crawlDepth: Int = 1,
     val crawlSameSite: Boolean = true,
+    /** Update notifications and developer announcements from GitHub (both on by default). */
+    val updateNotify: Boolean = true,
+    val announcements: Boolean = true,
 ) {
     fun domainPartMap(): Map<String, Int> = domainParts.lineSequence().mapNotNull { l ->
         val (d, n) = l.split('=', ' ', ':').map { it.trim() }.filter { it.isNotEmpty() }.takeIf { it.size >= 2 } ?: return@mapNotNull null
@@ -91,6 +94,8 @@ class SettingsRepo(context: Context) {
         savePasswords = prefs.getBoolean("save_pw", true),
         crawlDepth = prefs.getInt("crawl_depth", 1),
         crawlSameSite = prefs.getBoolean("crawl_same", true),
+        updateNotify = prefs.getBoolean("upd_notify", true),
+        announcements = prefs.getBoolean("announce", true),
     )
 
     fun update(f: (AppSettings) -> AppSettings) {
@@ -131,6 +136,8 @@ class SettingsRepo(context: Context) {
             .putBoolean("save_pw", s.savePasswords)
             .putInt("crawl_depth", s.crawlDepth.coerceIn(1, 3))
             .putBoolean("crawl_same", s.crawlSameSite)
+            .putBoolean("upd_notify", s.updateNotify)
+            .putBoolean("announce", s.announcements)
             .apply()
         _state.value = s
     }

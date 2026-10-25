@@ -42,6 +42,7 @@ fun SettingsScreen(
         Spacer(Modifier.height(4.dp))
         Text("SETTINGS", style = Type.H1.copy(color = accent))
         Spacer(Modifier.height(18.dp))
+        io.github.kyotobyte.cdmplus.update.UpdateSettingsSection(s, onChange)
         Section("Downloads") {
             Line("Threads per download", "Connections used for segmented downloads") { PixelStepper(s.threads, 1..32, { v -> onChange { it.copy(threads = v) } }) }
             Line("Simultaneous downloads", "Others wait in the queue") { PixelStepper(s.maxSimultaneous, 1..30, { v -> onChange { it.copy(maxSimultaneous = v) } }) }

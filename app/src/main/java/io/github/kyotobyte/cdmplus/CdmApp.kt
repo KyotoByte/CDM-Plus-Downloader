@@ -58,6 +58,7 @@ class CdmApp : Application() {
                 io.github.kyotobyte.cdmplus.ui.Px.amoled = s.amoled; io.github.kyotobyte.cdmplus.ui.Px.light = s.themeMode == "light"
                 io.github.kyotobyte.cdmplus.service.FloatingService.sync(this@CdmApp)
                 io.github.kyotobyte.cdmplus.service.DailySchedule.arm(this@CdmApp)
+                io.github.kyotobyte.cdmplus.update.Updater.onSettingsChanged(this@CdmApp)
                 core.onNetworkChanged()
             }
         }
@@ -71,6 +72,7 @@ class CdmApp : Application() {
             }, android.content.IntentFilter(android.content.Intent.ACTION_BATTERY_CHANGED))
         }
         core.start()
+        io.github.kyotobyte.cdmplus.update.Updater.init(this)
     }
 
     /**

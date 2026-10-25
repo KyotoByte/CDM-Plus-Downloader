@@ -91,6 +91,7 @@ fun DownloadsScreen(
             if (onScanQr != null) { PixelIconButton(PxIcons.Qr, onScanQr, accent); Spacer(Modifier.width(8.dp)) }
             PixelButton("Add", onAdd, icon = PxIcons.Plus)
         }
+        io.github.kyotobyte.cdmplus.update.UpdateBanners()
         if (history.any { it > 0 } || totalSpeed > 0) {
             Column(Modifier.padding(horizontal = 16.dp).padding(bottom = 10.dp)) {
                 PixelSpeedGraph(history, accent, Modifier.fillMaxWidth())
