@@ -1,7 +1,7 @@
 {
-  "versionCode": 11,
+  "versionCode": 12,
   "versionName": "1.0",
-  "notes": "CDM+ v1.0 update: 🔔 Update notifications + announcements (Settings → Updates). Multi-connection downloads, in-app browser with GRAB, YouTube/Instagram/TikTok, MEGA, torrents, ad-block.",
+  "notes": "CDM+ V1.0 Patch 1: X & Facebook video download (paste, share or GRAB: reels, videos, share links, with sound) + CDM+ Browser on your home screen.",
   "apks": {
     "arm64-v8a": "https://github.com/KyotoByte/CDM-Plus-Downloader/releases/download/v1.0/CDM-Plus-Downloader-v1.0-arm64-v8a.apk",
     "armeabi-v7a": "https://github.com/KyotoByte/CDM-Plus-Downloader/releases/download/v1.0/CDM-Plus-Downloader-v1.0-armeabi-v7a.apk",
