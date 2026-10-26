@@ -3,8 +3,11 @@
     <shortcut android:shortcutId="add" android:enabled="true" android:icon="@mipmap/ic_launcher" android:shortcutShortLabel="@string/sc_add">
         <intent android:action="android.intent.action.VIEW" android:targetPackage="io.github.kyotobyte.cdmplus" android:targetClass="io.github.kyotobyte.cdmplus.MainActivity" android:data="cdmplus://add" />
     </shortcut>
-    <shortcut android:shortcutId="browser" android:enabled="true" android:icon="@mipmap/ic_launcher" android:shortcutShortLabel="@string/sc_browser">
+    <shortcut android:shortcutId="browser" android:enabled="true" android:icon="@mipmap/ic_browser" android:shortcutShortLabel="@string/sc_browser">
         <intent android:action="android.intent.action.VIEW" android:targetPackage="io.github.kyotobyte.cdmplus" android:targetClass="io.github.kyotobyte.cdmplus.MainActivity" android:data="cdmplus://browser" />
+    </shortcut>
+    <shortcut android:shortcutId="downloads" android:enabled="true" android:icon="@mipmap/ic_launcher" android:shortcutShortLabel="@string/sc_downloads">
+        <intent android:action="android.intent.action.VIEW" android:targetPackage="io.github.kyotobyte.cdmplus" android:targetClass="io.github.kyotobyte.cdmplus.MainActivity" android:data="cdmplus://downloads" />
     </shortcut>
     <shortcut android:shortcutId="vpn" android:enabled="true" android:icon="@mipmap/ic_launcher" android:shortcutShortLabel="@string/sc_vpn">
         <intent android:action="android.intent.action.VIEW" android:targetPackage="io.github.kyotobyte.cdmplus" android:targetClass="io.github.kyotobyte.cdmplus.MainActivity" android:data="cdmplus://vpn" />

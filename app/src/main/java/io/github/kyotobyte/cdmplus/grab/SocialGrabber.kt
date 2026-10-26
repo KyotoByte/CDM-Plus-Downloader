@@ -86,6 +86,8 @@ class SocialGrabber(base: OkHttpClient) {
         fun platformOf(url: String): String? = when {
             IG.containsMatchIn(url) -> "Instagram"
             TT.containsMatchIn(url) -> "TikTok"
+            XfbGrabber.isX(url) -> "X"
+            XfbGrabber.isFacebook(url) -> "Facebook"
             else -> null
         }
 
@@ -264,8 +266,9 @@ class SocialGrabber(base: OkHttpClient) {
             return when (platformOf(pageUrl)) {
                 "Instagram" -> parseInstagram(html)
                 "TikTok" -> parseTikTok(html)
+                "Facebook" -> XfbGrabber.parseFacebook(html, XfbGrabber.fbVideoId(pageUrl))
                 else -> null
-            } ?: parseOg(platformOf(pageUrl) ?: "Page", html)?.takeIf { r -> r.items.any { i -> i.options.any { it.kind == "video" } } || platformOf(pageUrl) != null }
+            } ?: parseOg(platformOf(pageUrl) ?: "Page", html)?.takeIf { r -> r.items.any { i -> i.options.any { it.kind == "video" } } || (platformOf(pageUrl) != null && platformOf(pageUrl) != "X" && platformOf(pageUrl) != "Facebook") }
         }
 
 
@@ -299,7 +302,7 @@ class SocialGrabber(base: OkHttpClient) {
          * files get the audio track attached so CDM+ joins them.
          */
         fun fromSniffed(platform: String, urls: List<String>, kinds: Map<String, String> = emptyMap()): GrabResult? {
-            if (platform != "Instagram") return null
+            if (platform != "Instagram" && platform != "Facebook") return null
             class S(val url: String, val audio: Boolean, val progressive: Boolean, val bitrate: Long, val order: Int, val asset: String?)
             val seen = LinkedHashMap<String, S>()
             urls.forEachIndexed { i, raw ->
@@ -334,7 +337,9 @@ class SocialGrabber(base: OkHttpClient) {
                 }
             }
             audio?.let { opts += GrabOption(it.url, "audio", "Audio only", ext = "m4a") }
-            return GrabResult(platform, "Instagram reel", null, listOf(GrabItem(0, opts)),
+            return if (platform == "Facebook") GrabResult(platform, "Facebook video", null, listOf(GrabItem(0, opts)),
+                headers = mapOf("User-Agent" to XfbGrabber.DESKTOP_UA, "Referer" to "https://www.facebook.com/"))
+            else GrabResult(platform, "Instagram reel", null, listOf(GrabItem(0, opts)),
                 headers = mapOf("Referer" to "https://www.instagram.com/"))
         }
 
@@ -365,7 +370,7 @@ class SocialGrabber(base: OkHttpClient) {
 
         /** [fromSniffed] after probing every candidate file, so audio is never missed or mistaken for video. */
         suspend fun fromSniffedProbed(platform: String, urls: List<String>): GrabResult? = withContext(Dispatchers.IO) {
-            if (platform != "Instagram") return@withContext null
+            if (platform != "Instagram" && platform != "Facebook") return@withContext null
             val firstByKey = LinkedHashMap<String, String>()
             urls.forEach { u -> igMediaKey(u)?.let { k -> firstByKey.getOrPut(k) { u } } }
             val kinds = kotlinx.coroutines.coroutineScope {
@@ -375,7 +380,8 @@ class SocialGrabber(base: OkHttpClient) {
         }
 
         /** Instagram /reel/, /reels/, /tv/ and TikTok /video/ links are videos: a cover alone is not an answer. */
-        fun isVideoPost(url: String): Boolean = Regex("""instagram\.com/(?:[\w.]+/)?(reel|reels|tv)/""").containsMatchIn(url) || Regex("""tiktok\.com/@[^/]+/video/""").containsMatchIn(url)
+        fun isVideoPost(url: String): Boolean = Regex("""instagram\.com/(?:[\w.]+/)?(reel|reels|tv)/""").containsMatchIn(url) || Regex("""tiktok\.com/@[^/]+/video/""").containsMatchIn(url) ||
+            (XfbGrabber.isFacebook(url) && Regex("""(?:fb\.watch/|/reels?/|/videos/|/watch|/share/[rv]/)""").containsMatchIn(url))
 
         private fun hasVideo(r: GrabResult?) = r?.items?.any { i -> i.options.any { it.kind == "video" } } == true
 
@@ -386,6 +392,15 @@ class SocialGrabber(base: OkHttpClient) {
         suspend fun fromPage(pageUrl: String, html: String?, sniffed: List<String>, fetch: suspend () -> GrabResult): GrabResult {
             val platform = platformOf(pageUrl)
             val wantsVideo = isVideoPost(pageUrl)
+            // X / Facebook: the public extractor gives every quality with sound; the live page is the fallback.
+            if (platform == "X" || platform == "Facebook") {
+                val first = runCatching { fetch() }
+                first.getOrNull()?.let { if (hasVideo(it)) return it }
+                html?.let { h -> runCatching { parseHtml(pageUrl, h) }.getOrNull() }?.let { if (hasVideo(it)) return it }
+                if (platform == "Facebook") fromSniffedProbed(platform, sniffed)?.let { return it }
+                first.getOrNull()?.let { return it }
+                throw first.exceptionOrNull() ?: GrabException("Couldn't find the video in this $platform post")
+            }
             val page = html?.let { parseHtml(pageUrl, it) }
             if (page != null && (hasVideo(page) || !wantsVideo)) return page
             val sn = platform?.let { fromSniffedProbed(it, sniffed) }
@@ -404,8 +419,10 @@ class SocialGrabber(base: OkHttpClient) {
 
     /** Fetches a public post and returns its media. Throws [GrabException] with a clear message when it can't. */
     suspend fun grab(url: String): GrabResult = withContext(Dispatchers.IO) {
-        val platform = platformOf(url) ?: throw GrabException("Not an Instagram or TikTok link")
+        val platform = platformOf(url) ?: throw GrabException("Not an Instagram, TikTok, X or Facebook link")
         when (platform) {
+            "X" -> XfbGrabber.grabX(client, url)
+            "Facebook" -> XfbGrabber.grabFacebook(client, url)
             "Instagram" -> {
                 val (kind, code) = IG.find(url)!!.destructured
                 val tries = listOf(

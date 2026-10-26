@@ -5,7 +5,7 @@
 # CDM+ Downloader
 
 **Fast multi-connection download manager for Android, with a pixel-minimalist UI.**
-Browser with GRAB, YouTube / Instagram / TikTok, MEGA, torrents and a built-in ad-block VPN, all in one app.
+Browser with GRAB, YouTube / Instagram / TikTok / X / Facebook, MEGA, torrents and a built-in ad-block VPN, all in one app.
 
 [![Latest release](https://img.shields.io/github/v/release/KyotoByte/CDM-Plus-Downloader?style=flat-square&color=3dff8a&label=release)](https://github.com/KyotoByte/CDM-Plus-Downloader/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/KyotoByte/CDM-Plus-Downloader/total?style=flat-square&color=3dff8a)](https://github.com/KyotoByte/CDM-Plus-Downloader/releases)
@@ -81,6 +81,8 @@ Open the [latest release](https://github.com/KyotoByte/CDM-Plus-Downloader/relea
 ### 🎯 Grabbers
 - ▶️ **YouTube**: videos, Shorts, playlists (plus SoundCloud, Bandcamp, PeerTube)
 - 📷 **Instagram** public posts, reels and carousels · 🎵 **TikTok** public posts, with "Extract music"
+- 𝕏 **X / Twitter** public videos, GIFs and photos · 📘 **Facebook** public videos, reels and share links, with sound (V1.0 Patch 1)
+- 🌐 **CDM+ Browser** icon on your home screen, straight into the browser
 - ☁️ **MEGA** file links **and folder links**: pick files or select all, folder structure kept, decrypted on your phone
 
 ### 🌐 Built-in browser
@@ -149,7 +151,7 @@ Needs JDK 17+ and the Android SDK (compileSdk 37). APKs land in `app/build/outpu
 ```
 app/src/main/java/io/github/kyotobyte/cdmplus/
 ├── engine/    download engine: segmented / HLS / FTP / torrent downloaders, queue, persistence
-├── grab/      YouTube / Instagram / TikTok / MEGA grabbers
+├── grab/      YouTube / Instagram / TikTok / X / Facebook / MEGA grabbers
 ├── service/   foreground service, MediaStore/SAF publishing, alarms, notifications
 ├── ui/        Compose screens and pixel components
 ├── data/      settings, browser data, ad-block, password vault

@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
                 buildMap {
                     android.webkit.CookieManager.getInstance().getCookie(r.url)?.let { put("Cookie", it) }
                     put("User-Agent", android.webkit.WebSettings.getDefaultUserAgent(this@MainActivity))
-                    when (r.source) { "TikTok" -> put("Referer", "https://www.tiktok.com/"); "Instagram" -> put("Referer", "https://www.instagram.com/") }
+                    when (r.source) { "TikTok" -> put("Referer", "https://www.tiktok.com/"); "Instagram" -> put("Referer", "https://www.instagram.com/"); "Facebook" -> put("Referer", "https://www.facebook.com/"); "X" -> put("Referer", "https://x.com/") }
                 }
             }
             app.core.add(r.url, r.fileName, null, headers, null, r.mime, 0, null, r.audioUrl, r.postProcess, r.source, subDir = r.subDir)
@@ -328,6 +328,12 @@ class MainActivity : ComponentActivity() {
 
     private fun handleIntent(intent: Intent?) {
         intent ?: return
+        // The "CDM+ Browser" home-screen icon (an alias of this activity): straight into the browser, fresh tab.
+        if (intent.action == Intent.ACTION_MAIN && intent.component?.className?.endsWith(".BrowserLauncher") == true) {
+            state.tab = io.github.kyotobyte.cdmplus.ui.Tab.BROWSER
+            state.openInBrowser = io.github.kyotobyte.cdmplus.ui.NEW_TAB
+            return
+        }
         when (intent.getStringExtra(EXTRA_TAB)) {
             "vpn" -> state.tab = io.github.kyotobyte.cdmplus.ui.Tab.VPN
         }
@@ -350,6 +356,7 @@ class MainActivity : ComponentActivity() {
             when (intent.data?.host) {
                 "add" -> state.pendingAdd = ""
                 "browser" -> state.tab = io.github.kyotobyte.cdmplus.ui.Tab.BROWSER
+                "downloads" -> state.tab = io.github.kyotobyte.cdmplus.ui.Tab.DOWNLOADS
                 "vpn" -> state.tab = io.github.kyotobyte.cdmplus.ui.Tab.VPN
             }
             return

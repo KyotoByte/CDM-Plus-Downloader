@@ -180,7 +180,7 @@ fun SettingsScreen(
         }
         Spacer(Modifier.height(10.dp))
         val ctx = androidx.compose.ui.platform.LocalContext.current
-        Text("CDM+ Downloader v1.0", style = Type.Label.copy(color = Px.Dim))
+        Text("CDM+ Downloader v1.0 Patch 1", style = Type.Label.copy(color = Px.Dim))
         Text("https://github.com/KyotoByte", style = Type.Label.copy(color = accent), modifier = Modifier.clickable {
             runCatching { ctx.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/KyotoByte"))) }
         })

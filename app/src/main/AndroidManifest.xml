@@ -83,6 +83,20 @@
             </intent-filter>
         </activity>
 
+        <!-- Second home-screen icon: "CDM+ Browser" opens straight into the in-app browser (same app, same task). -->
+        <activity-alias
+            android:name=".BrowserLauncher"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:label="@string/browser_launcher_label"
+            android:icon="@mipmap/ic_browser"
+            android:roundIcon="@mipmap/ic_browser">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <service
             android:name=".service.DownloadService"
             android:exported="false"

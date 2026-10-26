@@ -155,13 +155,14 @@ class UpdateTest {
     @Test fun shippedFilesParse() {
         val root = listOf(File("update.json"), File("../update.json")).first { it.exists() }.parentFile ?: File(".")
         val info = UpdateCore.parseUpdate(File(root, "update.json").readText())!!
-        assertEquals(11L, info.versionCode)
+        assertEquals(12L, info.versionCode) // V1.0 Patch 1
         assertEquals("1.0", info.versionName)
-        assertEquals(CheckResult.Latest, UpdateCore.evaluate(info, 11))
+        assertEquals(CheckResult.Latest, UpdateCore.evaluate(info, 12))
+        assertEquals(CheckResult.Available(info), UpdateCore.evaluate(info, 11)) // vc11 users get offered Patch 1
         listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86", "universal").forEach {
             assertEquals("https://github.com/KyotoByte/CDM-Plus-Downloader/releases/download/v1.0/CDM-Plus-Downloader-v1.0-$it.apk", info.apks[it])
         }
-        assertNull(UpdateCore.parseNotice(File(root, "notice.json").readText())) // empty id = no announcement
+        assertEquals("patch1-2026-10-26", UpdateCore.parseNotice(File(root, "notice.json").readText())!!.id) // Patch 1 announcement
         assertEquals(CheckResult.Available(info), UpdateCore.evaluate(info, 10)) // v1.0 build 10 users get offered build 11
     }
 }

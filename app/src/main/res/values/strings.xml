@@ -2,7 +2,9 @@
 <resources>
     <string name="app_name">CDM+ Downloader</string>
     <string name="share_label">Download with CDM+</string>
-    <string name="sc_add">Add link</string>
+    <string name="sc_add">Grab / add link</string>
     <string name="sc_browser">Browser</string>
     <string name="sc_vpn">1.1.1.1 mode</string>
+    <string name="sc_downloads">Downloads</string>
+    <string name="browser_launcher_label">CDM+ Browser</string>
 </resources>

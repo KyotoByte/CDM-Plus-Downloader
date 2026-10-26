@@ -63,6 +63,8 @@ fun toUrl(input: String, searchTemplate: String = SearchEngine.GOOGLE.template):
 }
 
 var HOME_URL = SearchEngine.GOOGLE.home
+/** Asks the browser for a fresh start-page tab (the "CDM+ Browser" home-screen icon). */
+const val NEW_TAB = "cdmplus:newtab"
 const val MAX_TABS = 20
 /** Live WebViews kept in memory; older background tabs are released and reload when opened. */
 const val MAX_LIVE_TABS = 6
@@ -230,7 +232,14 @@ fun BrowserScreen(
             if (tabs.isEmpty()) open(incognito = incognito) else select(act.coerceIn(0, tabs.size - 1))
         }
     }
-    androidx.compose.runtime.LaunchedEffect(openUrl) { if (openUrl != null) { holder.open(openUrl, incognito = false); onOpened() } }
+    androidx.compose.runtime.LaunchedEffect(openUrl) {
+        if (openUrl != null) {
+            // NEW_TAB (the CDM+ Browser icon): a fresh start-page tab, unless the current tab already is one.
+            if (openUrl != NEW_TAB) holder.open(openUrl, incognito = false)
+            else if (holder.current?.let { it.url == HOME_URL || it.url.isBlank() } != true) holder.open(HOME_URL, incognito = false)
+            onOpened()
+        }
+    }
     val ui = holder.ui
     // Callbacks follow the newest composition; the WebViews only ever call through holder.ui.
     ui.onCaught = onCaught; ui.onToast = onToast; ui.store = store; ui.vault = vault; ui.adBlock = adBlock
